@@ -5,36 +5,48 @@ export default function TimerChallenge({ title, targetTime }) {
   let timerPointer = useRef();
   let dialog = useRef();
 
-  const [buttonText, setbuttonText] = useState(false);
-  const [isLose, setisLose] = useState(false);
+  const [remainingTime, setremainingTime] = useState(targetTime * 1000);
+  const timerActive = remainingTime > 0 && remainingTime < targetTime * 1000;
+
+  if (remainingTime <= 0) {
+    clearInterval(timerPointer.current);
+    dialog.current.open();
+  }
+
+  function handleReset() {
+    setremainingTime(targetTime * 1000);
+  }
 
   function handleStart() {
     console.log("start hua");
-    setbuttonText(true);
-    timerPointer.current = setTimeout(() => {
-      handleStop();
-      dialog.current.open();
-      setisLose(true);
-    }, 1000 * targetTime);
+    timerPointer.current = setInterval(() => {
+      setremainingTime((pre) => pre - 10);
+    }, 10);
   }
   function handleStop() {
     console.log("stop hua");
-    clearTimeout(timerPointer.current);
+    clearInterval(timerPointer.current);
+    dialog.current.open();
   }
   return (
     <>
-      <ResultModal ref={dialog} targetTime={targetTime} result="lost"/>
+      <ResultModal
+        ref={dialog}
+        targetTime={targetTime}
+        remainingTime={remainingTime}
+        onReset={handleReset}
+      />
       <section className="challenge">
         <h2>{title}</h2>
         <p className="challenge-time">
           {targetTime} second{targetTime > 1 ? "s" : ""}
         </p>
         <p>
-          <button onClick={buttonText ? handleStop : handleStart}>
-            {buttonText ? "Stop" : "Start"} Challenge
+          <button onClick={timerActive ? handleStop : handleStart}>
+            {timerActive ? "Stop" : "Start"} Challenge
           </button>
         </p>
-        <p className="">Time is running...</p>
+        <p className={timerActive ? "active" : undefined}>Time is running...</p>
       </section>
     </>
   );
