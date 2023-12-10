@@ -1,20 +1,17 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 export default function Player() {
-  const [displayValue, setDisplayValue] = useState('');
-  const [allowChange, setAllowChange] = useState(false);
-  function handleChange(event){
-    setAllowChange(false);
-    setDisplayValue(event.target.value);
-  }
-  function handleClick(){
-    setAllowChange(true);
+  const [displayValue, setDisplayValue] = useState("");
+  var playerName = useRef();
+
+  function handleClick() {
+    setDisplayValue(playerName.current.value);
   }
 
   return (
     <section id="player">
-      <h2>Welcome {allowChange ? displayValue : 'unknown entity'}</h2>
+      <h2>Welcome {displayValue ? displayValue : "unknown entity"}</h2>
       <p>
-        <input type="text" onChange={handleChange} value={displayValue}/>
+        <input type="text" ref={playerName} />
         <button onClick={handleClick}>Set Name</button>
       </p>
     </section>
