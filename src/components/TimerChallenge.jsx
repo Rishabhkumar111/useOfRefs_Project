@@ -1,37 +1,41 @@
-import { useRef, useState } from "react"
+import { useRef, useState } from "react";
+import ResultModal from "./ResultModal.jsx";
 
-export default function TimerChallenge({title, targetTime}){
-    let timerPointer = useRef();
-    const [buttonText, setbuttonText] = useState(false);
-    const [isLose, setisLose] = useState(false);
+export default function TimerChallenge({ title, targetTime }) {
+  let timerPointer = useRef();
+  let dialog = useRef();
 
-    function handleStart(){
-        console.log('start hua');
-        setbuttonText(true);
-        timerPointer.current = setTimeout(()=>{
-            handleStop();
-            setisLose(true);
-        },1000*targetTime);
-    }
-    function handleStop(){
-        console.log('stop hua');
-        clearTimeout(timerPointer.current);
-    }
-    return <section className="challenge">
+  const [buttonText, setbuttonText] = useState(false);
+  const [isLose, setisLose] = useState(false);
+
+  function handleStart() {
+    console.log("start hua");
+    setbuttonText(true);
+    timerPointer.current = setTimeout(() => {
+      handleStop();
+      dialog.current.open();
+      setisLose(true);
+    }, 1000 * targetTime);
+  }
+  function handleStop() {
+    console.log("stop hua");
+    clearTimeout(timerPointer.current);
+  }
+  return (
+    <>
+      <ResultModal ref={dialog} targetTime={targetTime} result="lost"/>
+      <section className="challenge">
         <h2>{title}</h2>
         <p className="challenge-time">
-            {targetTime} second{targetTime>1 ? 's':''}
+          {targetTime} second{targetTime > 1 ? "s" : ""}
         </p>
-        {
-            isLose && <p>You lost</p>
-        }
         <p>
-            <button onClick={buttonText ? handleStop : handleStart}>
-                {buttonText ? 'Stop' : 'Start'} Challenge
-            </button>
+          <button onClick={buttonText ? handleStop : handleStart}>
+            {buttonText ? "Stop" : "Start"} Challenge
+          </button>
         </p>
-        <p className="">
-            Time is running...
-        </p>
-    </section>
+        <p className="">Time is running...</p>
+      </section>
+    </>
+  );
 }
