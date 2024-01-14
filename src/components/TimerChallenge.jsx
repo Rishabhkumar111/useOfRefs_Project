@@ -18,13 +18,11 @@ export default function TimerChallenge({ title, targetTime }) {
   }
 
   function handleStart() {
-    console.log("start hua");
     timerPointer.current = setInterval(() => {
       setremainingTime((pre) => pre - 10);
     }, 10);
   }
   function handleStop() {
-    console.log("stop hua");
     clearInterval(timerPointer.current);
     dialog.current.open();
   }
